@@ -2,13 +2,42 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Tracking  Application</title>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-<script type="text/javascript">
-function changeCarrier(carrier){
 
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+function changeCarrier(carrier){
+	
+	
 }
 
 $(document).ready(function() {
+		
+		var counter = 0;
+		function ajaxCall(data){
+			
+			setTimeout(function(){
+					
+					
+			$.ajax({
+			url: "trackingFunction.php",	
+			type: "POST",
+			data: data,		
+			cache: false,
+			async:true,
+			//success
+			success: function (html) {				
+				counter++;
+				$('#table-output').append(html).addClass("kevo-class");	
+				$('#counter').html(counter);	
+			}		
+		});
+			
+			
+			
+		}, 2000); // we're passing i
+		}
 		
 //	$("select option:selected").
 	
@@ -31,46 +60,30 @@ $(document).ready(function() {
 		
 		//disabled all the text fields
 		$('.text').attr('disabled','true');
-		
-		//show the loading sign
-		$('.loading').show();
-		
+		$('.form').hide();					
+		$('.done').fadeIn('slow');
 		$('.done h1').append(carrier+" Tracking Statuses");
 
 		
 		var trackingtext = $('textarea').val().split('\n');
+		$('#total-rows').html(trackingtext.length);	
 		for(var i = 0;i < trackingtext.length;i++){
 		  //  alert(trackingtext[i]);
 		var data = 'carrier=' + carrier + '&trackingnumber='  + trackingtext[i];
 
-
-			var ajaxCall = $.ajax({
-				//this is the php file that processes the data
-				url: "functions/packageTracking.php",	
-				//GET method is used
-				type: "POST",
-				//pass the data			
-				data: data,		
-				//Do not cache the page
-				cache: false,
-				async:true,
-				//success
-				success: function (html) {				
-					//if process.php returned 1/true (send mail success)			
-						//hide the form
-						$('.form').hide();					
-						//show the success message
-						$('.done').fadeIn('slow');
-						$('#table-output').append(html);
-						
-				}		
-			
-			});
-	} //for loop
-		//cancel the submit button default behaviours
-	
 		
-		return false;
+		ajaxCall(data);
+		// new code
+		
+		
+		
+		
+		
+		
+		// new code
+		
+	} //for loop
+	return false;
 		
 	});
 });	
@@ -103,16 +116,17 @@ table{background-color:#C0C0C0}
 td{width:250px;padding: 7px;color: white;font-size: 120%;}
 .green{background-color:green;}
 .red{background-color:red}
-
+.counter{position:fixed;top:10px;right:10px;}
 
 </style>
 <body>
+<h1 class="counter"><span id="counter"></span>/<span id="total-rows"></span></h1>
 
 <h1>Innocom Solutions Package Tracking Appplication</h1>
 <div class="block">
 <div class="done">
 <h1></h1>
-<h2><a href="index.html"> << Back</a></h2><br><br>
+<h2><a href="/tracking.php"> << Back</a></h2><br><br>
 
 <table id="table-output" cellpadding="0" padding="0" spacing="0">
 
